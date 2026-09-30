@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contacto | SVAD</title>
+  <meta name="description" content="Escribile a SVAD: contanos qué necesitás y te respondemos dentro de los tiempos acordados.">
+  <meta name="theme-color" content="#111C36">
+  <script>if ('IntersectionObserver' in window) document.documentElement.classList.add('js');</script>
+  <link rel="icon" type="image/png" href="/img/logo-svad-96.png">
+  <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <header class="cabecera" id="cabecera">
+    <div class="contenedor">
+      <a class="marca" href="/" aria-label="SVAD, ir al inicio">
+        <img src="/img/logo-svad-96.png" alt="" width="26" height="44">
+        <span>SVAD</span>
+      </a>
+      <button class="menu-boton" type="button" id="menu-boton" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+        <span class="rayas"></span>
+      </button>
+      <nav aria-label="Principal">
+        <ul class="menu" id="menu">
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/nosotros.html">Nosotros</a></li>
+          <li><a href="/servicios.html">Servicios</a></li>
+          <li><a href="/contacto.html" aria-current="page">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="encabezado-pagina">
+      <div class="contenedor">
+        <p class="eyebrow eyebrow-claro">Contacto</p>
+        <h1>Contanos qué necesitás</h1>
+        <p>Escribinos tu consulta y te respondemos dentro de los tiempos acordados. Sin tecnicismos: contanos qué te pasa con tus palabras.</p>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor contacto-grid">
+
+        <div class="formulario-tarjeta">
+          <form id="formulario-contacto" novalidate>
+            <h2>Enviá tu consulta</h2>
+            <p>Antes de enviar, verificamos que los datos estén completos para poder responderte. Los campos con * son obligatorios.</p>
+
+            <p class="aviso-envio" id="aviso-envio" role="alert" hidden></p>
+
+            <div class="campo" id="campo-nombre">
+              <label for="nombre">Nombre *</label>
+              <input type="text" id="nombre" name="nombre" autocomplete="name" maxlength="100" required aria-describedby="error-nombre">
+              <p class="mensaje-error" id="error-nombre" aria-live="polite"></p>
+            </div>
+
+            <div class="campo" id="campo-email">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" autocomplete="email" maxlength="150" required aria-describedby="error-email">
+              <p class="mensaje-error" id="error-email" aria-live="polite"></p>
+            </div>
+
+            <div class="campo" id="campo-telefono">
+              <label for="telefono">Teléfono <span class="opcional">(opcional)</span></label>
+              <input type="tel" id="telefono" name="telefono" autocomplete="tel" maxlength="30" aria-describedby="error-telefono">
+              <p class="mensaje-error" id="error-telefono" aria-live="polite"></p>
+            </div>
+
+            <div class="campo" id="campo-asunto">
+              <label for="asunto">Asunto *</label>
+              <input type="text" id="asunto" name="asunto" maxlength="150" required aria-describedby="error-asunto">
+              <p class="mensaje-error" id="error-asunto" aria-live="polite"></p>
+            </div>
+
+            <div class="campo" id="campo-mensaje">
+              <label for="mensaje">Mensaje *</label>
+              <textarea id="mensaje" name="mensaje" maxlength="2000" required aria-describedby="error-mensaje contador-mensaje"></textarea>
+              <p class="mensaje-error" id="error-mensaje" aria-live="polite"></p>
+              <p class="contador" id="contador-mensaje">0 caracteres (mínimo 10)</p>
+            </div>
+
+            <button class="boton" type="submit" id="boton-enviar">Enviar consulta</button>
+          </form>
+
+          <div class="exito" id="exito" tabindex="-1" hidden>
+            <div class="icono-caja"><span class="icono" style="--icono:url('/img/iconos/check.svg')"></span></div>
+            <h2>¡Recibimos tu consulta!</h2>
+            <p>Gracias por escribirnos. Ya la anotamos y te vamos a responder dentro de los tiempos acordados.</p>
+            <button class="boton" type="button" id="boton-otra">Enviar otra consulta</button>
+          </div>
+        </div>
+
+        <aside class="info-lateral" aria-label="Información de contacto">
+          <div class="bloque-oscuro">
+            <h2>Qué pasa con tu consulta</h2>
+            <ol class="pasos-mini">
+              <li><strong>Atención</strong>Anotamos quién sos, qué te pasa, desde cuándo y qué tan urgente es.</li>
+              <li><strong>Diagnóstico</strong>Hacemos preguntas y revisamos hasta encontrar la causa.</li>
+              <li><strong>Solución</strong>Resolvemos a distancia o vamos al lugar si hace falta.</li>
+              <li><strong>Seguimiento</strong>A los pocos días confirmamos que el problema no volvió.</li>
+            </ol>
+          </div>
+          <div class="recuadro">
+            <h3>También podés contactarnos por</h3>
+            <ul class="datos-contacto">
+              <li>
+                <span class="icono" style="--icono:url('/img/iconos/telefono.svg')"></span>
+                <div><a href="tel:+542964628142">+54 2964 628142</a><small>Teléfono</small></div>
+              </li>
+              <li>
+                <span class="icono" style="--icono:url('/img/iconos/ubicacion.svg')"></span>
+                <div><strong>Río Grande, Tierra del Fuego</strong><small>Soporte remoto y presencial</small></div>
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie-grid">
+        <div>
+          <a class="marca" href="/" aria-label="SVAD, ir al inicio">
+            <img src="/img/logo-svad-96.png" alt="" width="24" height="40">
+            <span>SVAD</span>
+          </a>
+          <p>Tu información, siempre a salvo.</p>
+          <p>Hardware, redes, asistencia informática y protección de datos.</p>
+        </div>
+        <div>
+          <h2>Sitio</h2>
+          <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/nosotros.html">Nosotros</a></li>
+            <li><a href="/servicios.html">Servicios</a></li>
+            <li><a href="/contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Contacto</h2>
+          <ul>
+            <li><a href="tel:+542964628142">+54 2964 628142</a></li>
+            <li>Río Grande, Tierra del Fuego</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pie-legal">
+        <p>© 2026 SVAD. Seguridad, Verificación y Administración de Datos.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/comun.js"></script>
+  <script src="/js/contacto.js"></script>
+</body>
+</html>
