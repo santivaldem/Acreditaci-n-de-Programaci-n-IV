@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consultas | Panel SVAD</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#111C36">
+  <link rel="icon" type="image/png" href="/img/logo-svad-96.png">
+  <link rel="stylesheet" href="/css/estilos.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <header class="panel-cabecera">
+    <div class="contenedor">
+      <a class="panel-marca" href="/admin/panel.html" aria-label="SVAD, panel de administración">
+        <img src="/img/logo-svad-96.png" alt="" width="25" height="42">
+        <span><strong>SVAD</strong><small>Panel de administración</small></span>
+      </a>
+      <div class="panel-acciones">
+        <span class="chip-usuario" id="usuario-nombre">admin</span>
+        <a class="enlace-sitio" href="/" target="_blank" rel="noopener">Ver sitio</a>
+        <button class="boton boton-borde boton-chico" type="button" id="boton-salir">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="panel-contenedor" id="contenido">
+    <div class="panel-titulo">
+      <div>
+        <h1>Consultas recibidas</h1>
+        <p>Lo que escriben los visitantes desde el formulario de contacto.</p>
+      </div>
+      <button class="boton boton-claro boton-chico" type="button" id="boton-actualizar">Actualizar</button>
+    </div>
+
+    <section class="resumen" aria-label="Resumen de consultas">
+      <button class="resumen-tile" type="button" data-estado="" aria-pressed="true">
+        <span class="resumen-numero" id="total-todas">–</span>
+        <span class="resumen-etiqueta">Todas</span>
+      </button>
+      <button class="resumen-tile destacado" type="button" data-estado="no-leidas" aria-pressed="false">
+        <span class="resumen-numero" id="total-no-leidas">–</span>
+        <span class="resumen-etiqueta">No leídas</span>
+      </button>
+      <button class="resumen-tile" type="button" data-estado="leidas" aria-pressed="false">
+        <span class="resumen-numero" id="total-leidas">–</span>
+        <span class="resumen-etiqueta">Leídas</span>
+      </button>
+      <div class="resumen-tile">
+        <span class="resumen-fecha" id="ultima-consulta">–</span>
+        <span class="resumen-etiqueta">Última consulta</span>
+      </div>
+    </section>
+
+    <form class="filtros" id="filtros" role="search" aria-label="Filtrar consultas" novalidate>
+      <div class="campo campo-buscar">
+        <label for="filtro-buscar">Buscar por nombre o email</label>
+        <input type="search" id="filtro-buscar" placeholder="Ej.: Lucía o lucia@correo.com" autocomplete="off" maxlength="100">
+      </div>
+      <div class="campo">
+        <label for="filtro-estado">Estado</label>
+        <select id="filtro-estado">
+          <option value="">Todas</option>
+          <option value="no-leidas">No leídas</option>
+          <option value="leidas">Leídas</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="filtro-desde">Desde</label>
+        <input type="date" id="filtro-desde">
+      </div>
+      <div class="campo">
+        <label for="filtro-hasta">Hasta</label>
+        <input type="date" id="filtro-hasta">
+      </div>
+      <button class="boton boton-claro boton-chico filtros-limpiar" type="button" id="filtros-limpiar">Limpiar filtros</button>
+    </form>
+    <p class="aviso-filtros" id="aviso-filtros" role="alert" hidden></p>
+
+    <div class="barra-resultados">
+      <p id="contador-resultados" aria-live="polite">Cargando…</p>
+    </div>
+
+    <div class="tabla-caja">
+      <table class="tabla" id="tabla" hidden>
+        <caption class="solo-lectores">Listado de consultas recibidas</caption>
+        <thead>
+          <tr>
+            <th scope="col">Estado</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Email</th>
+            <th scope="col">Asunto</th>
+            <th scope="col">Fecha</th>
+            <th scope="col"><span class="solo-lectores">Acción</span></th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-tabla"></tbody>
+      </table>
+
+      <div class="estado-vacio" id="estado-vacio">
+        <p>Cargando consultas…</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="cortina" id="cortina" hidden></div>
+  <aside class="detalle" id="detalle" role="dialog" aria-modal="true" aria-labelledby="detalle-titulo" hidden>
+    <div class="detalle-cabecera">
+      <div>
+        <small id="detalle-id">Consulta</small>
+        <h2 id="detalle-titulo">Cargando…</h2>
+      </div>
+      <button class="detalle-cerrar" type="button" id="detalle-cerrar" aria-label="Cerrar detalle">×</button>
+    </div>
+    <div class="detalle-cuerpo">
+      <p class="cargando-detalle" id="detalle-cargando">Cargando consulta…</p>
+      <div id="detalle-contenido" hidden>
+        <dl class="detalle-datos">
+          <div><dt>Nombre</dt><dd id="detalle-nombre"></dd></div>
+          <div><dt>Estado</dt><dd id="detalle-estado"></dd></div>
+          <div><dt>Email</dt><dd id="detalle-email"></dd></div>
+          <div><dt>Teléfono</dt><dd id="detalle-telefono"></dd></div>
+          <div><dt>Recibida</dt><dd id="detalle-fecha"></dd></div>
+        </dl>
+        <h3 class="detalle-mensaje-titulo">Mensaje</h3>
+        <p class="detalle-mensaje" id="detalle-mensaje"></p>
+      </div>
+    </div>
+    <div class="detalle-pie">
+      <a class="boton boton-claro" id="detalle-responder" href="#" hidden>Responder por email</a>
+      <button class="boton" type="button" id="detalle-marcar" hidden>Marcar como leída</button>
+    </div>
+  </aside>
+
+  <div class="aviso-flotante" id="aviso-flotante" role="status" aria-live="polite"></div>
+
+  <script src="/js/admin-panel.js"></script>
+</body>
+</html>

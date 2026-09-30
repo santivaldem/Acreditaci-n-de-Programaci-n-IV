@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingresar | Panel SVAD</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#111C36">
+  <link rel="icon" type="image/png" href="/img/logo-svad-96.png">
+  <link rel="stylesheet" href="/css/estilos.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <main class="login-pagina">
+    <div class="login-anillos" aria-hidden="true"></div>
+    <a class="login-volver" href="/">← Volver al sitio</a>
+
+    <div class="login-tarjeta">
+      <div class="login-marca">
+        <img src="/img/logo-svad-96.png" alt="" width="31" height="52">
+        <span>SVAD</span>
+      </div>
+      <p class="eyebrow">Panel de administración</p>
+      <h1>Iniciá sesión</h1>
+      <p>Ingresá con tu usuario para leer y gestionar las consultas recibidas.</p>
+
+      <p class="aviso-sesion" id="aviso-sesion" role="status" hidden></p>
+      <p class="aviso-envio" id="error-login" role="alert" hidden></p>
+
+      <form id="formulario-login" novalidate>
+        <div class="campo" id="campo-usuario">
+          <label for="usuario">Usuario</label>
+          <input type="text" id="usuario" name="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" required aria-describedby="error-usuario">
+          <p class="mensaje-error" id="error-usuario"></p>
+        </div>
+
+        <div class="campo" id="campo-password">
+          <label for="password">Contraseña</label>
+          <div class="campo-clave">
+            <input type="password" id="password" name="password" autocomplete="current-password" required aria-describedby="error-password">
+            <button class="ver-clave" type="button" id="ver-clave" aria-controls="password" aria-pressed="false">Mostrar</button>
+          </div>
+          <p class="mensaje-error" id="error-password"></p>
+        </div>
+
+        <button class="boton" type="submit" id="boton-ingresar">Ingresar</button>
+      </form>
+
+      <p class="login-pie">Acceso solo para administradores de SVAD.</p>
+    </div>
+  </main>
+
+  <script src="/js/admin-login.js"></script>
+</body>
+</html>
