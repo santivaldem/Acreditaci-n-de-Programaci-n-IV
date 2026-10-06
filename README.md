@@ -26,6 +26,7 @@ Desde el panel se ven todas las consultas, se pueden filtrar por estado, fecha y
 
 | Método | Ruta | Acceso | Qué hace |
 |---|---|---|---|
+| GET | `/api/estado` | público | dice si la base de datos responde |
 | GET | `/api/servicios` | público | lista los servicios |
 | POST | `/api/consultas` | público | guarda una consulta |
 | POST | `/api/login` | público | devuelve un token si el usuario y la contraseña son correctos |

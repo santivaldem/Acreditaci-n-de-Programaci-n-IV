@@ -27,7 +27,7 @@
 
   const CON_FADE = '.seccion-titulo, .tarjeta, .regla, .paso, .bloque-oscuro, .recuadro, .persona, ' +
     '.logo-explicado > *, .dos-columnas > *, .formulario-tarjeta, .info-lateral > *, ' +
-    '.franja .contenedor, .area-cabecera, .lista-nodos li';
+    '.franja .contenedor, .area-cabecera, .lista-nodos li, .lista-motivos li, .pregunta';
   const SOLO_MARCA = '.pasos';
 
   const observador = new IntersectionObserver((entradas) => {

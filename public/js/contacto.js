@@ -4,6 +4,26 @@ const botonEnviar = document.getElementById('boton-enviar');
 const panelExito = document.getElementById('exito');
 const contadorMensaje = document.getElementById('contador-mensaje');
 
+const estadoBd = document.getElementById('estado-bd');
+const textoBd = document.getElementById('estado-bd-texto');
+const detalleBd = document.getElementById('estado-bd-detalle');
+const botonReintentar = document.getElementById('estado-bd-reintentar');
+
+const ESTADOS_BD = {
+  conectando: { texto: 'Conectando con la base de datos de SVAD…', detalle: '' },
+  guardando: { texto: 'Guardando tu consulta en la base de datos…', detalle: '' },
+  listo: {
+    texto: 'Conectado a la base de datos de SVAD',
+    detalle: 'Tu consulta se guarda ahí y solo la lee nuestro equipo, con usuario y contraseña.'
+  },
+  error: {
+    texto: 'No pudimos conectar con la base de datos',
+    detalle: 'Probá de nuevo en unos minutos o llamanos al +54 2964 628142.'
+  }
+};
+
+let enviando = false;
+
 const CAMPOS = ['nombre', 'email', 'telefono', 'asunto', 'mensaje'];
 const MINIMO_MENSAJE = 10;
 const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -76,6 +96,30 @@ function mostrarAviso(texto) {
   avisoEnvio.hidden = !texto;
 }
 
+function mostrarEstadoBd(estado) {
+  estadoBd.hidden = false;
+  estadoBd.dataset.estado = estado;
+  textoBd.textContent = ESTADOS_BD[estado].texto;
+  detalleBd.textContent = ESTADOS_BD[estado].detalle;
+  botonReintentar.hidden = estado !== 'error';
+}
+
+// pregunta al servidor si la base de datos responde (el reloj se ve al menos un segundo)
+async function comprobarConexion() {
+  mostrarEstadoBd('conectando');
+  let conectado = false;
+  try {
+    const [respuesta] = await Promise.all([
+      fetch('/api/estado'),
+      new Promise((listo) => setTimeout(listo, 1000))
+    ]);
+    conectado = respuesta.ok;
+  } catch (error) {
+    conectado = false;
+  }
+  if (!enviando) mostrarEstadoBd(conectado ? 'listo' : 'error');
+}
+
 for (const campo of CAMPOS) {
   const entrada = document.getElementById(campo);
   entrada.addEventListener('blur', () => {
@@ -98,8 +142,11 @@ formulario.addEventListener('submit', async (evento) => {
   const datos = {};
   for (const campo of CAMPOS) datos[campo] = document.getElementById(campo).value.trim();
 
+  enviando = true;
+  let fallo = false;
   botonEnviar.disabled = true;
   botonEnviar.textContent = 'Enviando…';
+  mostrarEstadoBd('guardando');
 
   try {
     const respuesta = await fetch('/api/consultas', {
@@ -130,13 +177,20 @@ formulario.addEventListener('submit', async (evento) => {
   } catch (error) {
     console.error('No se pudo enviar la consulta:', error);
     mostrarAviso('No pudimos enviar tu consulta. Revisá tu conexión e intentá de nuevo en unos minutos.');
+    fallo = true;
   } finally {
+    enviando = false;
     botonEnviar.disabled = false;
     botonEnviar.textContent = 'Enviar consulta';
+    if (fallo) comprobarConexion();
+    else mostrarEstadoBd('listo');
   }
 });
 
+botonReintentar.addEventListener('click', comprobarConexion);
+
 document.getElementById('boton-otra').addEventListener('click', () => {
+  comprobarConexion();
   formulario.reset();
   for (const campo of CAMPOS) mostrarError(campo, '');
   for (const campo of CAMPOS) document.getElementById(`campo-${campo}`).classList.remove('valido');
@@ -151,3 +205,4 @@ if (servicioElegido) {
   document.getElementById('asunto').value = `Consulta sobre: ${servicioElegido}`.slice(0, 150);
 }
 actualizarContador();
+comprobarConexion();

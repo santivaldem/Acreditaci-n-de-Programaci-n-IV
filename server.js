@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { conectar } = require('./db');
+const { conectar, consultar } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +15,15 @@ app.get('/admin', (req, res) => res.redirect('/admin/login.html'));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // rutas de la api
+app.get('/api/estado', async (req, res) => {
+  try {
+    await consultar('SELECT 1');
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(503).json({ ok: false });
+  }
+});
+
 app.use('/api', require('./routes/auth'));
 app.use('/api/servicios', require('./routes/servicios'));
 app.use('/api/consultas', require('./routes/consultas'));
