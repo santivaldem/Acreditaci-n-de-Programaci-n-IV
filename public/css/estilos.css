@@ -127,15 +127,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   background: radial-gradient(ellipse at 75% 45%, #22355F 0%, var(--navy) 40%, var(--navy-oscuro) 100%);
   color: var(--blanco);
 }
+/* el radar queda centrado en el disco del escudo (51.6% de la altura del logo) */
 .hero-radar {
-  position: absolute; right: -6%; top: 50%; width: min(760px, 95vw); aspect-ratio: 1;
-  transform: translateY(-50%); pointer-events: none;
+  position: absolute; left: 50%; top: 51.6%; width: min(760px, 95vw); aspect-ratio: 1;
+  transform: translate(-50%, -50%); pointer-events: none;
 }
 .hero-radar svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero-grid {
   position: relative; display: grid; grid-template-columns: 1.25fr 0.75fr;
   align-items: center; gap: 40px; padding-block: 88px;
 }
+.hero-texto { position: relative; z-index: 1; }
 .hero h1 { font-size: clamp(2.3rem, 5.4vw, 3.9rem); font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; }
 .hero h1 span {
   color: var(--cian);
@@ -151,9 +153,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; color: var(--cian);
 }
 .hero-visual { display: grid; place-items: center; }
-.hero-visual img {
-  width: min(300px, 100%); filter: drop-shadow(0 0 48px rgba(95, 233, 245, 0.28));
-}
+.hero-logo { position: relative; width: min(300px, 100%); }
+.hero-logo img { width: 100%; filter: drop-shadow(0 0 48px rgba(95, 233, 245, 0.28)); }
 
 /* secciones y tarjetas */
 .seccion { padding-block: 76px; }
@@ -459,7 +460,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   background: radial-gradient(circle, rgba(95, 233, 245, 0.2) 0%, rgba(95, 233, 245, 0) 62%);
   animation: pulso 6s ease-in-out infinite;
 }
-.hero-visual img { position: relative; }
+.hero-logo img { position: relative; }
 
 .tarjeta.tarjeta-destacada {
   color: var(--blanco); border-color: rgba(95, 233, 245, 0.35);
@@ -533,7 +534,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .hero-texto > :nth-child(3) { animation-delay: 0.16s; }
   .hero-texto > :nth-child(4) { animation-delay: 0.24s; }
   .hero-texto > :nth-child(5) { animation-delay: 0.32s; }
-  .hero-visual img { animation: entrar 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both, flotar 8s ease-in-out 1.2s infinite; }
+  .hero-logo { animation: entrar 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both, flotar 8s ease-in-out 1.2s infinite; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -549,8 +550,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 @media (max-width: 960px) {
   .hero-grid { grid-template-columns: 1fr; padding-block: 64px; }
   .hero-visual { order: -1; justify-items: start; }
-  .hero-visual img { width: 130px; }
-  .hero-radar { right: -25%; opacity: 0.7; }
+  .hero-logo { width: 130px; }
+  .hero-radar { opacity: 0.7; }
   .pasos { grid-template-columns: repeat(2, 1fr); row-gap: 36px; }
   .pasos::before { display: none; }
   .grilla-3 { grid-template-columns: repeat(2, 1fr); }
