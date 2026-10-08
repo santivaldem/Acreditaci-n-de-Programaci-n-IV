@@ -59,6 +59,17 @@
   window.revelar();
 })();
 
+// la portada solo se anima mientras se ve en pantalla
+(function () {
+  const portada = document.querySelector('.hero');
+  if (!portada || !('IntersectionObserver' in window)) return;
+
+  new IntersectionObserver((entradas) => {
+    const ultima = entradas[entradas.length - 1];
+    portada.classList.toggle('pausada', !ultima.isIntersecting);
+  }).observe(portada);
+})();
+
 if (matchMedia('(hover: hover)').matches) {
   document.addEventListener('pointermove', (evento) => {
     const tarjeta = evento.target.closest?.('.tarjeta');
