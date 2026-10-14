@@ -1,7 +1,7 @@
 const express = require('express');
 const { consultar } = require('../db');
-const { verifyPassword } = require('../utils/password');
-const { crearSesion, cerrarSesion, requiereAuth } = require('../middleware/auth');
+const { verifyPassword } = require('../password');
+const { crearSesion, cerrarSesion, requiereAuth } = require('../auth');
 
 const router = express.Router();
 

@@ -50,9 +50,9 @@ Base `svad_web` con tres tablas:
 ```
 database/     svad.sql y generar-hash.js
 routes/       auth.js, servicios.js, consultas.js
-middleware/   auth.js
-utils/        password.js
 public/       páginas, estilos, scripts e imágenes
+auth.js       sesiones y protección de rutas
+password.js   hash de contraseñas
 db.js         conexión a MySQL
 server.js     servidor Express
 ```

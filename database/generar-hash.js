@@ -1,4 +1,4 @@
-const { hashPassword } = require('../utils/password');
+const { hashPassword } = require('../password');
 
 const password = process.argv[2];
 
