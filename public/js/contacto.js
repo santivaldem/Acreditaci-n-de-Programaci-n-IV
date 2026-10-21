@@ -205,18 +205,36 @@ if (servicioElegido) {
   document.getElementById('asunto').value = `Consulta sobre: ${servicioElegido}`.slice(0, 150);
 }
 
-// llena el desplegable con los servicios de la base y deja elegido el que venía en la dirección
+// llena el desplegable con los servicios de la base, agrupados por área,
+// y deja elegido el que venía en la dirección
+const AREAS = {
+  hardware: 'Hardware',
+  redes: 'Redes',
+  asistencia: 'Asistencia informática',
+  datos: 'Protección y recuperación de datos'
+};
+
 async function cargarServicios() {
   try {
     const respuesta = await fetch('/api/servicios');
     if (!respuesta.ok) return;
+    const servicios = await respuesta.json();
     const selector = document.getElementById('servicio_id');
-    for (const servicio of await respuesta.json()) {
-      const opcion = document.createElement('option');
-      opcion.value = servicio.id;
-      opcion.textContent = servicio.nombre;
-      opcion.selected = servicio.nombre === servicioElegido;
-      selector.append(opcion);
+
+    for (const [clave, titulo] of Object.entries(AREAS)) {
+      const delArea = servicios.filter((servicio) => servicio.area === clave);
+      if (delArea.length === 0) continue;
+
+      const grupo = document.createElement('optgroup');
+      grupo.label = titulo;
+      for (const servicio of delArea) {
+        const opcion = document.createElement('option');
+        opcion.value = servicio.id;
+        opcion.textContent = servicio.nombre;
+        opcion.selected = servicio.nombre === servicioElegido;
+        grupo.append(opcion);
+      }
+      selector.append(grupo);
     }
   } catch (error) {
     console.error('No se pudieron cargar los servicios:', error);

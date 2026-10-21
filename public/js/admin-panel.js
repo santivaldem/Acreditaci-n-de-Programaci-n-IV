@@ -23,6 +23,8 @@ function iniciar() {
     formFiltros: $('filtros'),
     buscar: $('filtro-buscar'),
     estado: $('filtro-estado'),
+    servicio: $('filtro-servicio'),
+    porServicio: $('por-servicio'),
     desde: $('filtro-desde'),
     hasta: $('filtro-hasta'),
     limpiar: $('filtros-limpiar'),
@@ -50,7 +52,7 @@ function iniciar() {
     aviso: $('aviso-flotante')
   };
 
-  const filtros = { buscar: '', estado: '', desde: '', hasta: '' };
+  const filtros = { buscar: '', estado: '', servicio: '', desde: '', hasta: '' };
   let consultas = [];
   let totalGeneral = null;
   let numeroPeticion = 0;
@@ -134,6 +136,7 @@ function iniciar() {
       } else {
         el.ultimaConsulta.textContent = '–';
       }
+      dibujarFichas(todas);
       actualizarContador();
     } catch (error) {
       if (!error.sesionVencida) console.error('No se pudo cargar el resumen:', error);
@@ -144,6 +147,52 @@ function iniciar() {
     el.tiles.forEach((tile) => {
       tile.setAttribute('aria-pressed', String(tile.dataset.estado === filtros.estado));
     });
+  }
+
+  // una ficha por servicio con cuántas consultas tiene; sirve para ordenar el trabajo
+  function dibujarFichas(todas) {
+    const grupos = new Map();
+    for (const c of todas) {
+      const clave = c.servicio_id === null ? 'ninguno' : String(c.servicio_id);
+      const grupo = grupos.get(clave) || { clave, nombre: c.servicio || 'Sin servicio', total: 0, sinLeer: 0 };
+      grupo.total++;
+      if (!c.leida) grupo.sinLeer++;
+      grupos.set(clave, grupo);
+    }
+
+    const ordenadas = [...grupos.values()].sort((a, b) => b.sinLeer - a.sinLeer || b.total - a.total || a.nombre.localeCompare(b.nombre));
+    el.porServicio.replaceChildren(...ordenadas.map((g) => {
+      const ficha = crear('button', 'ficha-servicio');
+      ficha.type = 'button';
+      ficha.dataset.servicio = g.clave;
+      ficha.append(crear('span', '', g.nombre), crear('b', '', String(g.total)));
+      if (g.sinLeer > 0) ficha.append(crear('small', '', `${g.sinLeer} sin leer`));
+      ficha.addEventListener('click', () => {
+        filtros.servicio = filtros.servicio === g.clave ? '' : g.clave;
+        el.servicio.value = filtros.servicio;
+        sincronizarFichas();
+        aplicarFiltros();
+      });
+      return ficha;
+    }));
+    if (ordenadas.length === 0) el.porServicio.append(crear('p', 'ficha-vacia', 'Todavía no hay consultas.'));
+    sincronizarFichas();
+  }
+
+  function sincronizarFichas() {
+    el.porServicio.querySelectorAll('.ficha-servicio').forEach((ficha) => {
+      ficha.setAttribute('aria-pressed', String(ficha.dataset.servicio === filtros.servicio));
+    });
+  }
+
+  async function cargarServicios() {
+    try {
+      const respuesta = await fetch('/api/servicios');
+      if (!respuesta.ok) return;
+      for (const s of await respuesta.json()) el.servicio.append(new Option(s.nombre, s.id));
+    } catch (error) {
+      console.error('No se pudieron cargar los servicios:', error);
+    }
   }
 
   function hayFiltros() {
@@ -199,6 +248,8 @@ function iniciar() {
     const celdaAsunto = crear('td', 'celda-asunto');
     celdaAsunto.append(crear('span', '', consulta.asunto));
 
+    const celdaServicio = crear('td', 'celda-servicio', consulta.servicio || 'Sin servicio');
+
     const { fecha, hora } = partesFecha(consulta.fecha);
     const celdaFecha = crear('td', 'celda-fecha');
     celdaFecha.append(fecha, crear('small', '', hora));
@@ -209,7 +260,7 @@ function iniciar() {
     alternar.dataset.accion = 'alternar';
     celdaAccion.append(alternar);
 
-    fila.append(celdaEstado, celdaNombre, celdaEmail, celdaAsunto, celdaFecha, celdaAccion);
+    fila.append(celdaEstado, celdaNombre, celdaEmail, celdaAsunto, celdaServicio, celdaFecha, celdaAccion);
     return fila;
   }
 
@@ -281,9 +332,11 @@ function iniciar() {
     Object.keys(filtros).forEach((clave) => { filtros[clave] = ''; });
     el.buscar.value = '';
     el.estado.value = '';
+    el.servicio.value = '';
     el.desde.value = '';
     el.hasta.value = '';
     sincronizarTiles();
+    sincronizarFichas();
     aplicarFiltros();
   }
 
@@ -436,6 +489,11 @@ function iniciar() {
     sincronizarTiles();
     aplicarFiltros();
   });
+  el.servicio.addEventListener('change', () => {
+    filtros.servicio = el.servicio.value;
+    sincronizarFichas();
+    aplicarFiltros();
+  });
   el.desde.addEventListener('change', () => { filtros.desde = el.desde.value; aplicarFiltros(); });
   el.hasta.addEventListener('change', () => { filtros.hasta = el.hasta.value; aplicarFiltros(); });
   el.limpiar.addEventListener('click', limpiarFiltros);
@@ -469,6 +527,7 @@ function iniciar() {
   });
 
   pintarEstado({ texto: 'Cargando consultas…', icono: false });
+  cargarServicios();
   cargarResumen();
   cargarLista();
 }

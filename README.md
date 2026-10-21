@@ -22,7 +22,7 @@ Tecnologías: HTML, CSS y JavaScript, Node.js con Express, MySQL (XAMPP) con mys
 
 Es un solo panel con un menú de secciones:
 
-- **Bandeja:** las consultas, con filtros por estado, fecha y nombre o email, detalle y marca de leída.
+- **Bandeja:** las consultas, con una ficha por servicio (cuántas hay de cada uno y cuántas sin leer), filtros por estado, servicio, fecha y nombre o email, detalle y marca de leída.
 - **Servicios, Consultas y Administradores:** tablas con búsqueda, orden por columna, filtros, paginación y crear, ver, editar y eliminar.
 - **Registros:** historial de las acciones importantes (ingresos, altas, cambios y bajas). Es de solo lectura.
 - **Relaciones:** diagrama de las tablas y sus claves foráneas, leído en vivo desde MySQL.
@@ -38,7 +38,7 @@ Ocultar la entrada es solo comodidad: la protección real es el login, el token 
 | POST | `/api/consultas` | público | guarda una consulta (el servicio es opcional) |
 | POST | `/api/login` | público | devuelve un token si el usuario y la contraseña son correctos |
 | POST | `/api/logout` | admin | cierra la sesión |
-| GET | `/api/consultas` | admin | lista las consultas (filtros: `estado`, `desde`, `hasta`, `buscar`) |
+| GET | `/api/consultas` | admin | lista las consultas (filtros: `estado`, `servicio`, `desde`, `hasta`, `buscar`) |
 | GET | `/api/consultas/:id` | admin | detalle de una consulta |
 | PATCH | `/api/consultas/:id/leida` | admin | marca una consulta como leída o no leída |
 | GET | `/api/admin/entidades` | admin | describe las secciones del panel (campos y tipos) |

@@ -60,6 +60,11 @@
         </div>
       </section>
 
+      <section class="por-servicio" aria-labelledby="por-servicio-titulo">
+        <h2 class="por-servicio-titulo" id="por-servicio-titulo">Trabajos por servicio</h2>
+        <div class="por-servicio-fichas" id="por-servicio"></div>
+      </section>
+
       <form class="filtros" id="filtros" role="search" aria-label="Filtrar consultas" novalidate>
         <div class="campo campo-buscar">
           <label for="filtro-buscar">Buscar por nombre o email</label>
@@ -71,6 +76,13 @@
             <option value="">Todas</option>
             <option value="no-leidas">No leídas</option>
             <option value="leidas">Leídas</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtro-servicio">Servicio</label>
+          <select id="filtro-servicio">
+            <option value="">Todos</option>
+            <option value="ninguno">Sin servicio</option>
           </select>
         </div>
         <div class="campo">
@@ -98,6 +110,7 @@
               <th scope="col">Nombre</th>
               <th scope="col">Email</th>
               <th scope="col">Asunto</th>
+              <th scope="col">Servicio</th>
               <th scope="col">Fecha</th>
               <th scope="col"><span class="solo-lectores">Acción</span></th>
             </tr>

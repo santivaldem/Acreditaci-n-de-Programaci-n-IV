@@ -74,36 +74,43 @@ router.post('/', async (req, res) => {
   res.status(201).json({ id: resultado.insertId, mensaje: 'Consulta recibida. ¡Gracias por escribirnos!' });
 });
 
-// lista con filtros opcionales: estado, desde, hasta y buscar
+// lista con filtros opcionales: estado, servicio, desde, hasta y buscar
 router.get('/', requiereAuth, async (req, res) => {
   const estado = texto(req.query.estado);
   const desde = texto(req.query.desde);
   const hasta = texto(req.query.hasta);
   const buscar = texto(req.query.buscar);
+  const servicio = texto(req.query.servicio);
 
   // los valores van aparte (en "valores") para evitar inyección sql
   const condiciones = [];
   const valores = [];
 
-  if (estado === 'leidas') condiciones.push('leida = 1');
-  if (estado === 'no-leidas') condiciones.push('leida = 0');
+  if (estado === 'leidas') condiciones.push('c.leida = 1');
+  if (estado === 'no-leidas') condiciones.push('c.leida = 0');
   if (REGEX_FECHA.test(desde)) {
-    condiciones.push('fecha >= ?');
+    condiciones.push('c.fecha >= ?');
     valores.push(`${desde} 00:00:00`);
   }
   if (REGEX_FECHA.test(hasta)) {
-    condiciones.push('fecha <= ?');
+    condiciones.push('c.fecha <= ?');
     valores.push(`${hasta} 23:59:59`);
   }
   if (buscar) {
     const patron = `%${buscar.replace(/[\\%_]/g, '\\$&')}%`;
-    condiciones.push('(nombre LIKE ? OR email LIKE ?)');
+    condiciones.push('(c.nombre LIKE ? OR c.email LIKE ?)');
     valores.push(patron, patron);
+  }
+  if (servicio === 'ninguno') condiciones.push('c.servicio_id IS NULL');
+  else if (REGEX_ID.test(servicio)) {
+    condiciones.push('c.servicio_id = ?');
+    valores.push(Number(servicio));
   }
 
   const where = condiciones.length > 0 ? `WHERE ${condiciones.join(' AND ')}` : '';
   const filas = await consultar(
-    `SELECT id, nombre, email, asunto, leida, fecha FROM consultas ${where} ORDER BY fecha DESC, id DESC`,
+    `SELECT c.id, c.nombre, c.email, c.asunto, c.servicio_id, s.nombre AS servicio, c.leida, c.fecha
+     FROM consultas c LEFT JOIN servicios s ON s.id = c.servicio_id ${where} ORDER BY c.fecha DESC, c.id DESC`,
     valores
   );
 
