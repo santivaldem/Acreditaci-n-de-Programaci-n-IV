@@ -27,6 +27,7 @@ app.get('/api/estado', async (req, res) => {
 app.use('/api', require('./routes/auth'));
 app.use('/api/servicios', require('./routes/servicios'));
 app.use('/api/consultas', require('./routes/consultas'));
+app.use('/api/admin', require('./routes/admin'));
 
 app.use('/api', (req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada.' });

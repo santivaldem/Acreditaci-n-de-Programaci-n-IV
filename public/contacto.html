@@ -83,6 +83,14 @@
               <p class="mensaje-error" id="error-telefono" aria-live="polite"></p>
             </div>
 
+            <div class="campo" id="campo-servicio_id">
+              <label for="servicio_id">Servicio <span class="opcional">(opcional)</span></label>
+              <select id="servicio_id" name="servicio_id" aria-describedby="error-servicio_id">
+                <option value="">No estoy seguro / otro tema</option>
+              </select>
+              <p class="mensaje-error" id="error-servicio_id" aria-live="polite"></p>
+            </div>
+
             <div class="campo" id="campo-asunto">
               <label for="asunto">Asunto *</label>
               <input type="text" id="asunto" name="asunto" maxlength="150" required aria-describedby="error-asunto">

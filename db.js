@@ -31,4 +31,16 @@ async function consultar(sql, params = []) {
   }
 }
 
-module.exports = { conectar, consultar };
+// guarda una acción importante en la tabla registros; si falla, no corta el pedido
+async function registrar(administradorId, accion, entidad = null, entidadId = null, detalle = null) {
+  try {
+    await consultar(
+      'INSERT INTO registros (administrador_id, accion, entidad, entidad_id, detalle) VALUES (?, ?, ?, ?, ?)',
+      [administradorId, accion, entidad, entidadId, detalle ? String(detalle).slice(0, 255) : null]
+    );
+  } catch (err) {
+    console.error('No se pudo guardar el registro:', err.code || err.message);
+  }
+}
+
+module.exports = { conectar, consultar, registrar };

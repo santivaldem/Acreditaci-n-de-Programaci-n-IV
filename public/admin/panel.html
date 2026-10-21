@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Consultas | Panel SVAD</title>
+  <title>Panel | SVAD</title>
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#111C36">
   <link rel="icon" type="image/png" href="/img/logo-svad-96.png">
@@ -15,7 +15,7 @@
 
   <header class="panel-cabecera">
     <div class="contenedor">
-      <a class="panel-marca" href="/admin/panel.html" aria-label="SVAD, panel de administración">
+      <a class="panel-marca" href="#bandeja" aria-label="SVAD, panel de administración">
         <img src="/img/logo-svad-96.png" alt="" width="25" height="42">
         <span><strong>SVAD</strong><small>Panel de administración</small></span>
       </a>
@@ -25,85 +25,164 @@
         <button class="boton boton-borde boton-chico" type="button" id="boton-salir">Cerrar sesión</button>
       </div>
     </div>
+    <div class="panel-nav-caja">
+      <nav class="panel-nav" id="panel-nav" aria-label="Secciones del panel"></nav>
+    </div>
   </header>
 
   <main class="panel-contenedor" id="contenido">
-    <div class="panel-titulo">
-      <div>
-        <h1>Consultas recibidas</h1>
-        <p>Lo que escriben los visitantes desde el formulario de contacto.</p>
+
+    <div id="vista-bandeja">
+      <div class="panel-titulo">
+        <div>
+          <h1>Consultas recibidas</h1>
+          <p>Lo que escriben los visitantes desde el formulario de contacto.</p>
+        </div>
+        <button class="boton boton-claro boton-chico" type="button" id="boton-actualizar">Actualizar</button>
       </div>
-      <button class="boton boton-claro boton-chico" type="button" id="boton-actualizar">Actualizar</button>
+
+      <section class="resumen" aria-label="Resumen de consultas">
+        <button class="resumen-tile" type="button" data-estado="" aria-pressed="true">
+          <span class="resumen-numero" id="total-todas">–</span>
+          <span class="resumen-etiqueta">Todas</span>
+        </button>
+        <button class="resumen-tile destacado" type="button" data-estado="no-leidas" aria-pressed="false">
+          <span class="resumen-numero" id="total-no-leidas">–</span>
+          <span class="resumen-etiqueta">No leídas</span>
+        </button>
+        <button class="resumen-tile" type="button" data-estado="leidas" aria-pressed="false">
+          <span class="resumen-numero" id="total-leidas">–</span>
+          <span class="resumen-etiqueta">Leídas</span>
+        </button>
+        <div class="resumen-tile">
+          <span class="resumen-fecha" id="ultima-consulta">–</span>
+          <span class="resumen-etiqueta">Última consulta</span>
+        </div>
+      </section>
+
+      <form class="filtros" id="filtros" role="search" aria-label="Filtrar consultas" novalidate>
+        <div class="campo campo-buscar">
+          <label for="filtro-buscar">Buscar por nombre o email</label>
+          <input type="search" id="filtro-buscar" placeholder="Ej.: Lucía o lucia@correo.com" autocomplete="off" maxlength="100">
+        </div>
+        <div class="campo">
+          <label for="filtro-estado">Estado</label>
+          <select id="filtro-estado">
+            <option value="">Todas</option>
+            <option value="no-leidas">No leídas</option>
+            <option value="leidas">Leídas</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtro-desde">Desde</label>
+          <input type="date" id="filtro-desde">
+        </div>
+        <div class="campo">
+          <label for="filtro-hasta">Hasta</label>
+          <input type="date" id="filtro-hasta">
+        </div>
+        <button class="boton boton-claro boton-chico filtros-limpiar" type="button" id="filtros-limpiar">Limpiar filtros</button>
+      </form>
+      <p class="aviso-filtros" id="aviso-filtros" role="alert" hidden></p>
+
+      <div class="barra-resultados">
+        <p id="contador-resultados" aria-live="polite">Cargando…</p>
+      </div>
+
+      <div class="tabla-caja">
+        <table class="tabla" id="tabla" hidden>
+          <caption class="solo-lectores">Listado de consultas recibidas</caption>
+          <thead>
+            <tr>
+              <th scope="col">Estado</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Email</th>
+              <th scope="col">Asunto</th>
+              <th scope="col">Fecha</th>
+              <th scope="col"><span class="solo-lectores">Acción</span></th>
+            </tr>
+          </thead>
+          <tbody id="cuerpo-tabla"></tbody>
+        </table>
+
+        <div class="estado-vacio" id="estado-vacio">
+          <p>Cargando consultas…</p>
+        </div>
+      </div>
     </div>
 
-    <section class="resumen" aria-label="Resumen de consultas">
-      <button class="resumen-tile" type="button" data-estado="" aria-pressed="true">
-        <span class="resumen-numero" id="total-todas">–</span>
-        <span class="resumen-etiqueta">Todas</span>
-      </button>
-      <button class="resumen-tile destacado" type="button" data-estado="no-leidas" aria-pressed="false">
-        <span class="resumen-numero" id="total-no-leidas">–</span>
-        <span class="resumen-etiqueta">No leídas</span>
-      </button>
-      <button class="resumen-tile" type="button" data-estado="leidas" aria-pressed="false">
-        <span class="resumen-numero" id="total-leidas">–</span>
-        <span class="resumen-etiqueta">Leídas</span>
-      </button>
-      <div class="resumen-tile">
-        <span class="resumen-fecha" id="ultima-consulta">–</span>
-        <span class="resumen-etiqueta">Última consulta</span>
+    <div id="vista-gestion" hidden>
+      <div class="panel-titulo">
+        <div>
+          <h1 id="g-titulo"></h1>
+          <p id="g-subtitulo"></p>
+        </div>
+        <button class="boton boton-chico" type="button" id="g-nuevo">Nuevo</button>
       </div>
-    </section>
 
-    <form class="filtros" id="filtros" role="search" aria-label="Filtrar consultas" novalidate>
-      <div class="campo campo-buscar">
-        <label for="filtro-buscar">Buscar por nombre o email</label>
-        <input type="search" id="filtro-buscar" placeholder="Ej.: Lucía o lucia@correo.com" autocomplete="off" maxlength="100">
-      </div>
-      <div class="campo">
-        <label for="filtro-estado">Estado</label>
-        <select id="filtro-estado">
-          <option value="">Todas</option>
-          <option value="no-leidas">No leídas</option>
-          <option value="leidas">Leídas</option>
-        </select>
-      </div>
-      <div class="campo">
-        <label for="filtro-desde">Desde</label>
-        <input type="date" id="filtro-desde">
-      </div>
-      <div class="campo">
-        <label for="filtro-hasta">Hasta</label>
-        <input type="date" id="filtro-hasta">
-      </div>
-      <button class="boton boton-claro boton-chico filtros-limpiar" type="button" id="filtros-limpiar">Limpiar filtros</button>
-    </form>
-    <p class="aviso-filtros" id="aviso-filtros" role="alert" hidden></p>
+      <form class="filtros filtros-gestion" id="g-filtros" role="search" aria-label="Buscar y filtrar" novalidate>
+        <div class="campo campo-buscar">
+          <label for="g-buscar">Buscar</label>
+          <input type="search" id="g-buscar" placeholder="Escribí para buscar" autocomplete="off" maxlength="100">
+        </div>
+        <div class="filtros-extra" id="g-filtros-extra"></div>
+        <button class="boton boton-claro boton-chico" type="button" id="g-limpiar">Limpiar filtros</button>
+      </form>
 
-    <div class="barra-resultados">
-      <p id="contador-resultados" aria-live="polite">Cargando…</p>
+      <div class="barra-resultados">
+        <p id="g-contador" aria-live="polite"></p>
+        <label class="por-pagina">Filas
+          <select id="g-por-pagina"></select>
+        </label>
+      </div>
+
+      <div class="tabla-caja">
+        <table class="tabla tabla-gestion" id="g-tabla" hidden>
+          <caption class="solo-lectores" id="g-caption"></caption>
+          <thead><tr id="g-cabeza"></tr></thead>
+          <tbody id="g-cuerpo"></tbody>
+        </table>
+        <div class="estado-vacio" id="g-vacio"><p>Cargando…</p></div>
+      </div>
+      <nav class="paginacion" id="g-paginacion" aria-label="Paginación"></nav>
     </div>
 
-    <div class="tabla-caja">
-      <table class="tabla" id="tabla" hidden>
-        <caption class="solo-lectores">Listado de consultas recibidas</caption>
-        <thead>
-          <tr>
-            <th scope="col">Estado</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Email</th>
-            <th scope="col">Asunto</th>
-            <th scope="col">Fecha</th>
-            <th scope="col"><span class="solo-lectores">Acción</span></th>
-          </tr>
-        </thead>
-        <tbody id="cuerpo-tabla"></tbody>
-      </table>
+    <div id="vista-relaciones" hidden>
+      <div class="panel-titulo">
+        <div>
+          <h1>Relaciones</h1>
+          <p>Tablas y claves foráneas de la base <strong id="r-bd"></strong>, leídas en vivo desde MySQL.</p>
+        </div>
+      </div>
 
-      <div class="estado-vacio" id="estado-vacio">
-        <p>Cargando consultas…</p>
+      <div class="tabla-caja diagrama-caja">
+        <div id="r-diagrama"><p class="estado-vacio">Cargando…</p></div>
+      </div>
+      <p class="leyenda">
+        <span><b class="dg-pk">PK</b> clave primaria</span>
+        <span><b class="dg-fk">FK</b> clave foránea</span>
+        <span><b>N → 1</b> muchos registros de la tabla hija apuntan a uno de la tabla padre</span>
+      </p>
+
+      <h2 class="subtitulo">Dependencias entre tablas</h2>
+      <div class="tabla-caja">
+        <table class="tabla tabla-gestion tabla-relaciones">
+          <caption class="solo-lectores">Claves foráneas de la base de datos</caption>
+          <thead>
+            <tr>
+              <th scope="col">Campo (clave foránea)</th>
+              <th scope="col">Apunta a</th>
+              <th scope="col">Si se borra el registro padre</th>
+              <th scope="col">Si cambia su id</th>
+              <th scope="col">Filas vinculadas</th>
+            </tr>
+          </thead>
+          <tbody id="r-lista"></tbody>
+        </table>
+        <div class="estado-vacio" id="r-vacio" hidden><p>La base no tiene claves foráneas.</p></div>
       </div>
     </div>
+
   </main>
 
   <div class="cortina" id="cortina" hidden></div>
@@ -123,6 +202,7 @@
           <div><dt>Estado</dt><dd id="detalle-estado"></dd></div>
           <div><dt>Email</dt><dd id="detalle-email"></dd></div>
           <div><dt>Teléfono</dt><dd id="detalle-telefono"></dd></div>
+          <div><dt>Servicio</dt><dd id="detalle-servicio"></dd></div>
           <div><dt>Recibida</dt><dd id="detalle-fecha"></dd></div>
         </dl>
         <h3 class="detalle-mensaje-titulo">Mensaje</h3>
@@ -135,8 +215,46 @@
     </div>
   </aside>
 
+  <dialog class="dialogo" id="dialogo-formulario" aria-labelledby="df-titulo">
+    <form id="df-form" novalidate>
+      <div class="dialogo-cabecera"><h2 id="df-titulo"></h2></div>
+      <div class="dialogo-cuerpo">
+        <p class="aviso-envio" id="df-error" role="alert" hidden></p>
+        <div id="df-campos"></div>
+      </div>
+      <div class="dialogo-pie">
+        <button class="boton boton-claro" type="button" id="df-cancelar">Cancelar</button>
+        <button class="boton" type="submit" id="df-guardar">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialogo" id="dialogo-detalle" aria-labelledby="dd-titulo">
+    <div class="dialogo-cabecera"><h2 id="dd-titulo"></h2></div>
+    <div class="dialogo-cuerpo">
+      <dl class="detalle-datos" id="dd-datos"></dl>
+      <div class="vinculos" id="dd-vinculos"></div>
+    </div>
+    <div class="dialogo-pie">
+      <button class="boton boton-claro" type="button" id="dd-cerrar">Cerrar</button>
+      <button class="boton" type="button" id="dd-editar">Editar</button>
+    </div>
+  </dialog>
+
+  <dialog class="dialogo dialogo-chico" id="dialogo-confirmar" aria-labelledby="dc-titulo">
+    <div class="dialogo-cabecera"><h2 id="dc-titulo">Confirmar eliminación</h2></div>
+    <div class="dialogo-cuerpo"><p id="dc-texto"></p></div>
+    <div class="dialogo-pie">
+      <button class="boton boton-claro" type="button" id="dc-cancelar">Cancelar</button>
+      <button class="boton boton-peligro" type="button" id="dc-aceptar">Eliminar</button>
+    </div>
+  </dialog>
+
   <div class="aviso-flotante" id="aviso-flotante" role="status" aria-live="polite"></div>
 
+  <script src="/js/admin-comun.js"></script>
+  <script src="/js/admin-gestion.js"></script>
+  <script src="/js/admin-relaciones.js"></script>
   <script src="/js/admin-panel.js"></script>
 </body>
 </html>

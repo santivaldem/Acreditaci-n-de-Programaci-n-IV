@@ -1,5 +1,5 @@
 const express = require('express');
-const { consultar } = require('../db');
+const { consultar, registrar } = require('../db');
 const { requiereAuth } = require('../auth');
 
 const router = express.Router();
@@ -27,6 +27,7 @@ function validarConsulta(body) {
   const telefono = limpiar(body.telefono);
   const asunto = limpiar(body.asunto);
   const mensaje = limpiar(body.mensaje);
+  const servicio = limpiar(body.servicio_id == null ? '' : String(body.servicio_id));
 
   if (nombre.length < 2 || nombre.length > 100) {
     errores.nombre = 'El nombre debe tener entre 2 y 100 caracteres.';
@@ -44,7 +45,11 @@ function validarConsulta(body) {
     errores.mensaje = 'El mensaje debe tener entre 10 y 2000 caracteres.';
   }
 
-  return { datos: { nombre, email, telefono, asunto, mensaje }, errores };
+  if (servicio && !REGEX_ID.test(servicio)) {
+    errores.servicio_id = 'Elegí un servicio de la lista.';
+  }
+
+  return { datos: { nombre, email, telefono, asunto, mensaje, servicio_id: servicio || null }, errores };
 }
 
 router.post('/', async (req, res) => {
@@ -54,9 +59,16 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Datos inválidos.', errores });
   }
 
+  if (datos.servicio_id) {
+    const existe = await consultar('SELECT id FROM servicios WHERE id = ?', [datos.servicio_id]);
+    if (existe.length === 0) {
+      return res.status(400).json({ error: 'Datos inválidos.', errores: { servicio_id: 'Elegí un servicio de la lista.' } });
+    }
+  }
+
   const resultado = await consultar(
-    'INSERT INTO consultas (nombre, email, telefono, asunto, mensaje) VALUES (?, ?, ?, ?, ?)',
-    [datos.nombre, datos.email, datos.telefono || null, datos.asunto, datos.mensaje]
+    'INSERT INTO consultas (nombre, email, telefono, asunto, mensaje, servicio_id) VALUES (?, ?, ?, ?, ?, ?)',
+    [datos.nombre, datos.email, datos.telefono || null, datos.asunto, datos.mensaje, datos.servicio_id]
   );
 
   res.status(201).json({ id: resultado.insertId, mensaje: 'Consulta recibida. ¡Gracias por escribirnos!' });
@@ -104,7 +116,8 @@ router.get('/:id', requiereAuth, async (req, res) => {
   }
 
   const filas = await consultar(
-    'SELECT id, nombre, email, telefono, asunto, mensaje, leida, fecha FROM consultas WHERE id = ?',
+    `SELECT c.id, c.nombre, c.email, c.telefono, c.asunto, c.mensaje, c.servicio_id, s.nombre AS servicio, c.leida, c.fecha
+     FROM consultas c LEFT JOIN servicios s ON s.id = c.servicio_id WHERE c.id = ?`,
     [req.params.id]
   );
 
@@ -129,6 +142,7 @@ router.patch('/:id/leida', requiereAuth, async (req, res) => {
   if (resultado.affectedRows === 0) {
     return res.status(404).json({ error: 'Consulta no encontrada.' });
   }
+  await registrar(req.admin.id, leida ? 'marcar_leida' : 'marcar_no_leida', 'consultas', Number(req.params.id));
   res.json({ id: Number(req.params.id), leida });
 });
 

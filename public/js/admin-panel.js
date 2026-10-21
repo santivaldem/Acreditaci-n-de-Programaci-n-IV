@@ -42,6 +42,7 @@ function iniciar() {
     detalleEstado: $('detalle-estado'),
     detalleEmail: $('detalle-email'),
     detalleTelefono: $('detalle-telefono'),
+    detalleServicio: $('detalle-servicio'),
     detalleFecha: $('detalle-fecha'),
     detalleMensaje: $('detalle-mensaje'),
     detalleResponder: $('detalle-responder'),
@@ -314,6 +315,7 @@ function iniciar() {
     el.detalleNombre.textContent = c.nombre;
     el.detalleEstado.replaceChildren(crearPill(c.leida));
     el.detalleFecha.textContent = `${fecha} · ${hora} hs`;
+    el.detalleServicio.textContent = c.servicio || 'Sin asignar';
     el.detalleMensaje.textContent = c.mensaje;
 
     if (EMAIL_SEGURO.test(c.email)) {

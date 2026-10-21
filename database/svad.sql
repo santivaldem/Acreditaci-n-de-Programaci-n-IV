@@ -6,6 +6,7 @@ CREATE DATABASE IF NOT EXISTS svad_web
 USE svad_web;
 
 -- se borran las tablas para poder importar el archivo mas de una vez
+DROP TABLE IF EXISTS registros;
 DROP TABLE IF EXISTS consultas;
 DROP TABLE IF EXISTS servicios;
 DROP TABLE IF EXISTS administradores;
@@ -33,18 +34,39 @@ CREATE TABLE servicios (
 ) ENGINE=InnoDB;
 
 -- consultas del formulario de contacto (leida: 0 no leida, 1 leida)
+-- servicio_id es opcional: si se borra el servicio, la consulta queda sin servicio
 CREATE TABLE consultas (
-  id       INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  nombre   VARCHAR(100) NOT NULL,
-  email    VARCHAR(150) NOT NULL,
-  telefono VARCHAR(30)  NULL,
-  asunto   VARCHAR(150) NOT NULL,
-  mensaje  TEXT         NOT NULL,
-  leida    TINYINT(1)   NOT NULL DEFAULT 0,
-  fecha    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  nombre      VARCHAR(100) NOT NULL,
+  email       VARCHAR(150) NOT NULL,
+  telefono    VARCHAR(30)  NULL,
+  asunto      VARCHAR(150) NOT NULL,
+  mensaje     TEXT         NOT NULL,
+  servicio_id INT UNSIGNED NULL,
+  leida       TINYINT(1)   NOT NULL DEFAULT 0,
+  fecha       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_consultas_leida (leida),
-  KEY idx_consultas_fecha (fecha)
+  KEY idx_consultas_fecha (fecha),
+  KEY idx_consultas_servicio (servicio_id),
+  CONSTRAINT fk_consultas_servicio FOREIGN KEY (servicio_id)
+    REFERENCES servicios (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- acciones importantes de los administradores
+CREATE TABLE registros (
+  id               INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  administrador_id INT UNSIGNED NULL,
+  accion           VARCHAR(30)  NOT NULL,
+  entidad          VARCHAR(30)  NULL,
+  entidad_id       INT UNSIGNED NULL,
+  detalle          VARCHAR(255) NULL,
+  fecha            DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_registros_fecha (fecha),
+  KEY idx_registros_admin (administrador_id),
+  CONSTRAINT fk_registros_admin FOREIGN KEY (administrador_id)
+    REFERENCES administradores (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- datos iniciales
@@ -78,20 +100,20 @@ INSERT INTO servicios (nombre, descripcion, area, icono, precio, orden) VALUES
  'datos', 'datos', NULL, 8);
 
 -- consultas de ejemplo
-INSERT INTO consultas (nombre, email, telefono, asunto, mensaje, leida, fecha) VALUES
+INSERT INTO consultas (nombre, email, telefono, asunto, mensaje, servicio_id, leida, fecha) VALUES
 ('Lucía Fernández', 'lucia.fernandez@example.com', '2964 555-0101',
  'Presupuesto de red para oficina',
  'Hola, tenemos una oficina de 8 puestos y queremos ordenar el cableado y el Wi-Fi. ¿Pueden pasar a hacer un relevamiento y enviarnos un presupuesto?',
- 0, '2026-09-24 10:15:00'),
+ 4, 0, '2026-09-24 10:15:00'),
 ('Martín Gómez', 'martin.gomez@example.com', NULL,
  'Recuperar archivos de un disco',
  'Mi disco externo dejó de aparecer en la computadora y tiene fotos de la familia. ¿Es posible recuperarlas? Gracias.',
- 0, '2026-09-26 18:40:00'),
+ 8, 0, '2026-09-26 18:40:00'),
 ('Escuela N° 12', 'secretaria@example.com', '2964 555-0102',
  'Capacitación sobre phishing',
  'Nos interesa una charla corta para el personal docente sobre correos falsos y contraseñas seguras. ¿Qué disponibilidad tienen en octubre?',
- 1, '2026-09-20 09:05:00'),
+ 7, 1, '2026-09-20 09:05:00'),
 ('Camila Rojas', 'camila.rojas@example.com', '2964 555-0103',
  'Cambio de disco a SSD',
  'Mi notebook tarda mucho en arrancar. ¿Conviene cambiar el disco por un SSD? ¿Cuánto tiempo demora el trabajo?',
- 1, '2026-09-22 15:30:00');
+ 3, 1, '2026-09-22 15:30:00');

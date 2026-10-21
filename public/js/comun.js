@@ -70,6 +70,21 @@
   }).observe(portada);
 })();
 
+// entrada escondida al panel: tocar 5 veces seguidas el texto del pie
+(function () {
+  const pie = document.querySelector('.pie-legal p');
+  if (!pie) return;
+
+  let toques = 0;
+  let temporizador;
+  pie.addEventListener('click', () => {
+    toques++;
+    clearTimeout(temporizador);
+    temporizador = setTimeout(() => { toques = 0; }, 1500);
+    if (toques >= 5) location.href = '/admin/login.html';
+  });
+})();
+
 if (matchMedia('(hover: hover)').matches) {
   document.addEventListener('pointermove', (evento) => {
     const tarjeta = evento.target.closest?.('.tarjeta');

@@ -337,19 +337,19 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .campo { margin-bottom: 20px; }
 .campo label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.95rem; }
 .campo .opcional { font-weight: 500; color: var(--texto-suave); }
-.campo input, .campo textarea {
+.campo input, .campo textarea, .campo select {
   width: 100%; padding: 0.8rem 0.95rem; font: inherit; color: var(--texto);
   background: var(--hielo); border: 1.5px solid var(--linea); border-radius: 10px;
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 .campo textarea { min-height: 150px; resize: vertical; }
-.campo input:focus, .campo textarea:focus {
+.campo input:focus, .campo textarea:focus, .campo select:focus {
   outline: none; background: var(--blanco); border-color: var(--cian-profundo);
   box-shadow: 0 0 0 4px rgba(34, 184, 207, 0.22);
 }
-.campo.invalido input, .campo.invalido textarea { border-color: var(--error); background: #FFF6F5; }
-.campo.invalido input:focus, .campo.invalido textarea:focus { box-shadow: 0 0 0 4px rgba(179, 38, 30, 0.16); }
-.campo.valido input, .campo.valido textarea { border-color: var(--cian-profundo); }
+.campo.invalido input, .campo.invalido textarea, .campo.invalido select { border-color: var(--error); background: #FFF6F5; }
+.campo.invalido input:focus, .campo.invalido textarea:focus, .campo.invalido select:focus { box-shadow: 0 0 0 4px rgba(179, 38, 30, 0.16); }
+.campo.valido input, .campo.valido textarea, .campo.valido select { border-color: var(--cian-profundo); }
 .mensaje-error { min-height: 0; margin: 6px 0 0; font-size: 0.9rem; font-weight: 600; color: var(--error); }
 .mensaje-error:empty { display: none; }
 .contador { margin: 6px 0 0; font-size: 0.85rem; color: var(--texto-suave); text-align: right; }
@@ -430,7 +430,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .pie a { text-decoration: none; }
 .pie a:hover { color: var(--blanco); text-decoration: underline; text-underline-offset: 4px; }
 .pie-legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-top: 22px; font-size: 0.85rem; }
-.pie-legal p { margin: 0; }
+.pie-legal p { margin: 0; user-select: none; }
 
 /* animaciones y detalles */
 .hero::before {

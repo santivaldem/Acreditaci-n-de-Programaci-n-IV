@@ -2,10 +2,10 @@ const crypto = require('crypto');
 
 const DURACION_SESION_MS = 2 * 60 * 60 * 1000;
 
-// sesiones en memoria: token -> { usuario, expira }
+// sesiones en memoria: token -> { id, usuario, expira }
 const sesiones = new Map();
 
-function crearSesion(usuario) {
+function crearSesion(id, usuario) {
   const ahora = Date.now();
 
   for (const [token, sesion] of sesiones) {
@@ -13,7 +13,7 @@ function crearSesion(usuario) {
   }
 
   const token = crypto.randomBytes(32).toString('hex');
-  sesiones.set(token, { usuario, expira: ahora + DURACION_SESION_MS });
+  sesiones.set(token, { id, usuario, expira: ahora + DURACION_SESION_MS });
   return token;
 }
 
@@ -31,7 +31,7 @@ function requiereAuth(req, res, next) {
     return res.status(401).json({ error: 'No autorizado. Iniciá sesión.' });
   }
 
-  req.usuario = sesion.usuario;
+  req.admin = { id: sesion.id, usuario: sesion.usuario };
   req.token = token;
   next();
 }

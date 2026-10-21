@@ -24,7 +24,7 @@ const ESTADOS_BD = {
 
 let enviando = false;
 
-const CAMPOS = ['nombre', 'email', 'telefono', 'asunto', 'mensaje'];
+const CAMPOS = ['nombre', 'email', 'telefono', 'servicio_id', 'asunto', 'mensaje'];
 const MINIMO_MENSAJE = 10;
 const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const REGEX_TELEFONO = /^[0-9+\-()\s]{6,30}$/;
@@ -204,5 +204,24 @@ const servicioElegido = new URLSearchParams(location.search).get('servicio');
 if (servicioElegido) {
   document.getElementById('asunto').value = `Consulta sobre: ${servicioElegido}`.slice(0, 150);
 }
+
+// llena el desplegable con los servicios de la base y deja elegido el que venía en la dirección
+async function cargarServicios() {
+  try {
+    const respuesta = await fetch('/api/servicios');
+    if (!respuesta.ok) return;
+    const selector = document.getElementById('servicio_id');
+    for (const servicio of await respuesta.json()) {
+      const opcion = document.createElement('option');
+      opcion.value = servicio.id;
+      opcion.textContent = servicio.nombre;
+      opcion.selected = servicio.nombre === servicioElegido;
+      selector.append(opcion);
+    }
+  } catch (error) {
+    console.error('No se pudieron cargar los servicios:', error);
+  }
+}
+cargarServicios();
 actualizarContador();
 comprobarConexion();
